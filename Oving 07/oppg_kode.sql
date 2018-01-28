@@ -96,7 +96,7 @@ INSERT INTO CERTIFICATE VALUES(DEFAULT, '3', '3'); -- Oscars sertifikat
 
 
 -- OPPGAVE B)
--- 1 ) Enkelte fremmednøkler kan være NULL. Objekter kan referere til ingen objekter. For eksempel kan kvalifikasjoner være null.
+-- 1 ) Enkelte fremmednøkler kan være NULL. For eksempel kan kvalifikasjoner være null.
 
 -- 2 ) Jeg kunne for eksmpel Laget en primærnøkkel i CANDIDATEQUALIFICATIONS, inkrementert den og brukt den som nøkkel på assignment.
 -- for å få sjekket at kvalifikasjonene blir møtt. slik det er nå må man manuelt lese av tabellene for å sjekke kravene møtes.
