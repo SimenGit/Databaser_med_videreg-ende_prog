@@ -46,4 +46,8 @@
     public void registrerPoeng(double nyPoeng) {
         poeng += nyPoeng;
     }
+     public void setPoeng(double poeng) {
+        this.poeng += poeng;
+    }
+
 }
