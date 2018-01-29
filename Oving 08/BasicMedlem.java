@@ -28,8 +28,8 @@
 
     public double finnKvalPoeng(LocalDate date2) {
 
-       // LocalDate date1 = getInnmeldt();
-        LocalDate date1 = LocalDate.now();
+        LocalDate date1 = getInnmeldt();
+        //LocalDate date1 = LocalDate.now();
         int dagerMellom = Period.between(date1, date2).getDays();
 
         if(dagerMellom > 365) {
