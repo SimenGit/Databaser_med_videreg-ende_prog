@@ -80,7 +80,7 @@ INSERT INTO QUALIFICATIONS VALUES(DEFAULT, 'Kaste stein');
 INSERT INTO CANDIDATEQUALIFICATION VALUES('1', '1'); -- Erlend kan spise vaffler
 INSERT INTO CANDIDATEQUALIFICATION VALUES('1', '2'); -- Erlend kan ta bilder
 INSERT INTO CANDIDATEQUALIFICATION VALUES('2', '3'); -- Snorre kan kaste stein :)
-                                                     -- Oscar kan NULL!
+-- Oscar kan NULL!
 
 INSERT INTO ASSIGNMENT VALUES(DEFAULT, NULL, '1', '3', '20170110', '20170124', '40'); -- ingen kvalikk, Oscar, SpekkMekk, fra 10 - 24, totalt 40 timer.
 INSERT INTO ASSIGNMENT VALUES(DEFAULT, '1', '2', '1', '20170112', '20170114', '10'); -- må kunne spise vaffler, Kanyler, Erlend, fra 12 - 14, totalt 10 timer.
@@ -121,12 +121,12 @@ FROM CANDIDATE NATURAL JOIN QUALIFICATIONS NATURAL JOIN CANDIDATEQUALIFICATION;
 -- 4) Som oppgave 3), men få med de kandidatene som ikke er registrert med kvalifikasjoner.
 SELECT CANDIDATE.candidate_id, candidate_firstname, candidate_lastname, qualification_name
 FROM CANDIDATE LEFT JOIN CANDIDATEQUALIFICATION ON(CANDIDATE.candidate_id = CANDIDATEQUALIFICATION.candidate_id)
-LEFT JOIN QUALIFICATIONS ON(CANDIDATEQUALIFICATION.qualification_id = QUALIFICATIONS.qualification_id);
+  LEFT JOIN QUALIFICATIONS ON(CANDIDATEQUALIFICATION.qualification_id = QUALIFICATIONS.qualification_id);
 
 -- 5) Skriv ut jobbhistorikken til en bestemt vikar, gitt kandidatnr.
 -- Vikarnavn, sluttdato, oppdragsnr og bedriftsnavn skal med.
 SELECT CANDIDATE.candidate_id, CANDIDATE.candidate_firstname, ASSIGNMENT.end_date, ASSIGNMENT.assignment_id, COMPANY.company_name
-  FROM CANDIDATE NATURAL JOIN ASSIGNMENT NATURAL JOIN COMPANY;
+FROM CANDIDATE NATURAL JOIN ASSIGNMENT NATURAL JOIN COMPANY WHERE candidate_id = 2;
 
 
 
