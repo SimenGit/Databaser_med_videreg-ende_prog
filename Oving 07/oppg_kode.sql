@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS CANDIDATE;
 
 CREATE TABLE CANDIDATE(
   candidate_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  candidate_surname VARCHAR(30) NOT NULL,
+  candidate_firstname VARCHAR(30) NOT NULL,
   candidate_lastname VARCHAR(30) NOT NULL,
   candidate_phone INTEGER NOT NULL
 );
@@ -114,25 +114,25 @@ SELECT assignment_id, company_name, company_phone FROM ASSIGNMENT NATURAL JOIN C
 
 -- 3) Lag en liste over kandidater og kvalifikasjoner.
 -- Kandidatnavn og kvalifikasjonsbeskrivelse skal med i utskriften i tillegg til løpenumrene som identifiserer kandidat og kvalifikasjon.
-SELECT candidate_id, candidate_surname, candidate_lastname, qualification_id, qualification_name
+SELECT candidate_id, candidate_firstname, candidate_lastname, qualification_id, qualification_name
 FROM CANDIDATE NATURAL JOIN QUALIFICATIONS NATURAL JOIN CANDIDATEQUALIFICATION;
 -- Har ikke løpenummer i CANDIDATEQUALIFICATIONS.
 
 -- 4) Som oppgave 3), men få med de kandidatene som ikke er registrert med kvalifikasjoner.
-SELECT CANDIDATE.candidate_id, candidate_surname, candidate_lastname, qualification_name
+SELECT CANDIDATE.candidate_id, candidate_firstname, candidate_lastname, qualification_name
 FROM CANDIDATE LEFT JOIN CANDIDATEQUALIFICATION ON(CANDIDATE.candidate_id = CANDIDATEQUALIFICATION.candidate_id)
 LEFT JOIN QUALIFICATIONS ON(CANDIDATEQUALIFICATION.qualification_id = QUALIFICATIONS.qualification_id);
 
 -- 5) Skriv ut jobbhistorikken til en bestemt vikar, gitt kandidatnr.
 -- Vikarnavn, sluttdato, oppdragsnr og bedriftsnavn skal med.
-SELECT CANDIDATE.candidate_id, CANDIDATE.candidate_surname, ASSIGNMENT.end_date, ASSIGNMENT.assignment_id, COMPANY.company_name
+SELECT CANDIDATE.candidate_id, CANDIDATE.candidate_firstname, ASSIGNMENT.end_date, ASSIGNMENT.assignment_id, COMPANY.company_name
   FROM CANDIDATE NATURAL JOIN ASSIGNMENT NATURAL JOIN COMPANY;
 
 
 
 -- RELASJONSMODELLEN:
 
--- CANDIDATE(candidate_id, candidate_surname, candidate_lastname, candidate_phone)
+-- CANDIDATE(candidate_id, candidate_firstname, candidate_lastname, candidate_phone)
 
 -- COMPANY(company_id, company_name, company_phone, company_email)
 
