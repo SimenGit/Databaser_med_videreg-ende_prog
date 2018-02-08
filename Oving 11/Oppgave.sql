@@ -1,4 +1,3 @@
-
 -- Listene under er tatt fra løsningsforslag på Oving 7.
 
 DROP TABLE IF EXISTS leilighet;
@@ -134,9 +133,8 @@ ORDER BY andelseier.ansiennitet DESC;
 
 -- OPPGAVE 03:
 -- I hvilket år ble det eldste borettslaget etablert?
-SELECT MAX(borettslag.bolag_navn)
-FROM borettslag
-WHERE etabl_aar;
+SELECT MIN(borettslag.etabl_aar)
+FROM borettslag;
 
 -- OPPGAVE 04:
 -- Finn adressene til alle bygninger som inneholder leiligheter med minst tre rom.
@@ -167,13 +165,15 @@ NATURAL JOIN borettslag;
 /* Lag en liste som viser antall bygninger i hvert enkelt borettslag. Listen skal være sortert på borettslagsnavn.
 Husk at det kan finnes borettslag uten bygninger - de skal også med.
  */
-SELECT borettslag.bolag_navn, bygning.bygn_id
-  FROM borettslag
-LEFT OUTER JOIN bygning
-  ON borettslag.bolag_navn = bygning.bolag_navn
-ORDER BY borettslag.bolag_navn;
 
--- OPPGAVE 07:
+SELECT borettslag.bolag_navn, count(bygn_id) AS ant_bygninger FROM borettslag
+LEFT JOIN bygning
+  ON(borettslag.bolag_navn = bygning.bolag_navn)
+GROUP BY borettslag.bolag_navn
+ORDER BY borettslag.bolag_navn DESC;
+
+
+-- OPPGAVE 07: XXX
 -- Finn antall leiligheter i borettslaget "Tertitten".
 
 SELECT leilighet.leil_nr
@@ -185,11 +185,58 @@ LEFT OUTER JOIN borettslag
 WHERE borettslag.bolag_navn = 'Tertitten';
 
 
-
-
 -- OPPGAVE 08
 -- Hvor høyt kan du bo i borettslaget "Tertitten"?
+SELECT MAX(bygning.ant_etasjer)
+FROM bygning
+LEFT JOIN borettslag
+  ON bygning.bolag_navn = borettslag.bolag_navn
+WHERE borettslag.bolag_navn = 'Tertitten';
 
 
 -- OPPGAVE 09
 -- Finn navn og nummer til andelseiere som ikke har leilighet.
+
+SELECT andelseier.fornavn, andelseier.etternavn, andelseier.telefon
+FROM andelseier
+LEFT JOIN leilighet
+  ON (andelseier.and_eier_nr = leilighet.and_eier_nr)
+WHERE leilighet.leil_nr IS NULL;
+
+-- OPPGAVE 10
+-- Finn antall andelseiere pr borettslag, sortert etter antallet. Husk at det kan finnes borettslag uten andelseiere - de skal også med.
+
+SELECT andelseier.bolag_navn, COUNT(and_eier_nr) AS eier_antall FROM borettslag
+LEFT JOIN andelseier
+  ON(andelseier.bolag_navn = borettslag.bolag_navn)
+GROUP BY andelseier.bolag_navn
+ORDER BY eier_antall DESC;
+
+
+-- OPPGAVE 11
+-- Skriv ut en liste over alle andelseiere. For de som har leilighet, skal leilighetsnummeret skrives ut.
+
+SELECT andelseier.fornavn, andelseier.etternavn, leilighet.leil_nr
+FROM andelseier
+LEFT JOIN leilighet
+  ON andelseier.and_eier_nr = leilighet.and_eier_nr;
+
+-- OPPGAVE 12
+-- Hvilke borettslag har leiligheter med eksakt 4 rom?
+
+SELECT borettslag.bolag_navn, leilighet.ant_rom FROM borettslag
+  LEFT JOIN bygning
+  ON borettslag.bolag_navn = bygning.bolag_navn
+  LEFT JOIN leilighet
+  ON bygning.bygn_id = leilighet.bygn_id
+WHERE leilighet.ant_rom = '4';
+--  Ingen har eksakt 4 rom.
+
+
+-- OPPGAVE 13
+-- Skriv ut en liste over antall andelseiere pr postnr og poststed, begrenset til de som bor i leiligheter tilknyttet et borettslag. Husk at postnummeret til disse er postnummeret til bygningen de bor i, og ikke postnummeret til borettslaget. Du trenger ikke ta med poststeder med 0 andelseiere. (Ekstraoppgave: Hva hvis vi vil ha med poststeder med 0 andelseiere?)
+
+SELECT DISTINCT COUNT(andelseier.and_eier_nr) AS ant_eiere, poststed.poststed, bygning.postnr
+FROM poststed NATURAL JOIN borettslag NATURAL JOIN bygning NATURAL JOIN andelseier
+GROUP BY (and_eier_nr);
+
