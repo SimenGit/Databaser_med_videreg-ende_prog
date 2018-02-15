@@ -194,4 +194,8 @@ SELECT levinfo.levby FROM levinfo WHERE levby NOT IN(SELECT levby FROM levinfo N
 
 -- OPPGAVE 1_h
 -- Finn leverandørnummer for den leverandør som kan levere ordre nr 18 til lavest totale beløp (vanskelig).
+SELECT levinfo.levnr, levinfo.navn, MIN(prisinfo.pris) AS pris FROM levinfo NATURAL JOIN ordrehode NATURAL JOIN ordredetalj NATURAL JOIN
+ delinfo NATURAL JOIN prisinfo WHERE ordrenr = '18';
+
+
 
