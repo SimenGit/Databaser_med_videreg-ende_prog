@@ -123,9 +123,75 @@ WHERE prisinfo.levnr = '44';
 
 -- OPPGAVE 1_b
 -- Finn navn og by ("LevBy") for leverandører som kan levere del nummer 1.
-SELECT levinfo.navn, levinfo.levby
+SELECT DISTINCT levinfo.navn, levinfo.levby
 FROM levinfo NATURAL JOIN ordrehode NATURAL JOIN ordredetalj
 WHERE delnr = '1';
 
 -- OPPGAVE 1_c
 -- Finn nummer, navn og pris for den leverandør som kan levere del nummer 201 til billigst pris
+SELECT DISTINCT levinfo.levnr, levinfo.navn, MIN(prisinfo.pris) AS billigste
+FROM levinfo NATURAL JOIN prisinfo
+WHERE prisinfo.delnr = '201'
+GROUP BY levinfo.levnr
+  ORDER BY billigste
+LIMIT 1;
+
+-- OPPGAVE 1_d
+-- Lag fullstendig oversikt over ordre nr 16, med ordrenr, dato, delnr, beskrivelse, kvantum, (enhets-)pris og beregnet beløp (=pris*kvantum).
+SELECT ordrehode.ordrenr, ordrehode.dato, ordredetalj.delnr, ordredetalj.kvantum, delinfo.beskrivelse, prisinfo.pris, (pris * kvantum) AS beregnet_belop
+FROM ordrehode NATURAL JOIN ordredetalj NATURAL JOIN delinfo NATURAL JOIN prisinfo
+WHERE ordrehode.ordrenr = '16';
+
+-- OPPGAVE 1_e
+-- Finn delnummer og leverandørnummer for deler som har en pris som er høyere enn prisen for del med katalognr X7770.
+SELECT prisinfo.delnr, levinfo.levnr
+FROM levinfo LEFT JOIN prisinfo
+  ON levinfo.levnr = prisinfo.levnr
+WHERE prisinfo.pris > (SELECT prisinfo.pris FROM prisinfo WHERE prisinfo.katalognr = 'X7770');
+
+-- OPPGAVE 1_f
+/* i) Tenk deg at tabellen levinfo skal deles i to. Sammenhengen mellom by og fylke skal tas ut av tabellen. Det er unødvendig å lagre fylketilhørigheten for hver forekomst av by. Lag én ny tabell som inneholder byer og fylker. Fyll denne med data fra levinfo. Lag også en tabell som er lik levinfo unntatt kolonnen Fylke. (Denne splittingen av tabellen levinfo gjelder bare i denne oppgaven. I resten av oppgavesettet antar du at du har den opprinnelige levinfo-tabellen.) */
+
+DROP TABLE IF EXISTS by_fylke;
+DROP TABLE IF EXISTS levinfo2;
+
+CREATE TABLE levinfo2(
+  levnr   INTEGER,
+  navn    VARCHAR(20) NOT NULL,
+  adresse VARCHAR(20) NOT NULL,
+  levby   VARCHAR(20) NOT NULL,
+  postnr  INTEGER NOT NULL,
+  CONSTRAINT levinfo_pk PRIMARY KEY(levnr)
+);
+
+CREATE TABLE by_fylke(
+  levby VARCHAR(20) NOT NULL,
+  fylke VARCHAR(20) NOT NULL,
+  levnr INTEGER,
+  CONSTRAINT  by_pk FOREIGN KEY(levnr) REFERENCES levinfo2(levnr),
+  CONSTRAINT by_fylke_pk PRIMARY KEY(levby,fylke)
+);
+
+/* ii) Lag en virtuell tabell (view) slik at brukerne i størst mulig grad kan jobbe på samme måte mot de to nye tabellene som den gamle. Prøv ulike kommandoer mot tabellen (select, update, delete, insert). Hvilke begrensninger, hvis noen, har brukerne i forhold til tidligere? */
+
+
+
+INSERT INTO levinfo2 (levnr,navn,adresse,levby,postnr) values(1,'Leveringsbyrå','gangstaveien','Stavanger','0000');
+INSERT INTO levinfo2(levnr,navn,adresse,levby,postnr) values(2,'Bring','tullestien','Kristiansand','1111');
+
+INSERT INTO by_fylke(levby,fylke,levnr) values('Stavanger','Rogaland',1);
+INSERT INTO by_fylke(levby,fylke,levnr) values('Kristiansand','Vest-Agder',2);
+
+
+SELECT * FROM levinfo2 NATURAL JOIN by_fylke;
+
+SELECT * FROM by_fylke;
+
+-- OPPGAVE 1_g
+/*Anta at en vurderer å slette opplysningene om de leverandørene som ikke er representert i Prisinfo-tabellen. Finn ut hvilke byer en i tilfelle ikke får leverandør i. (Du skal ikke utføre slettingen.) (Tips: Svaret skal bli kun én by, "Ål".) */
+
+SELECT levinfo.levby FROM levinfo WHERE levby NOT IN(SELECT levby FROM levinfo NATURAL JOIN prisinfo);
+
+-- OPPGAVE 1_h
+-- Finn leverandørnummer for den leverandør som kan levere ordre nr 18 til lavest totale beløp (vanskelig).
+
