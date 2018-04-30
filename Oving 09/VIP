@@ -1,0 +1,68 @@
+public class VIP extends Sitte {
+
+    private String[][] tilskuer; // tabellstørrelse: antall rader * antall plasser pr rad
+
+    public VIP(String tribunenavn, int kapasitet, int pris, int rader) {
+        super(tribunenavn, kapasitet, pris, rader);
+        tilskuer = new String[rader][getKapasitet() / rader];
+    }
+
+    @Override
+    public int getAntSolgte() {
+        int solgte = 0;
+        for(int i = 0; i < tilskuer.length; i++) {
+            for(int j = 0; j < tilskuer[i].length; j++) {
+                if(tilskuer[i][j] != null) {
+                    solgte++;
+                }
+            }
+        }
+        return solgte;
+    }
+
+    @Override
+    public double getInntekt() {
+        return getAntSolgte() * getPris();
+    }
+
+    private int[] finnLedigPlasser(int antPlasser) {
+        int[] plassene = new int[2];
+        int startplass = 0;
+        for(int i = 0; i < tilskuer.length; i++) {
+            int counter = tilskuer[i].length;
+            for(int j = 0; j < antPlasser; j++) {
+                if(tilskuer[i][j] == null) {
+                    counter--;
+                    if(startplass == 0) {
+                        startplass = j;
+                        plassene[1] = startplass;
+                    }
+                }
+            }
+            if(counter >= 0) {
+                plassene[0] = i;
+                return plassene;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Billett[] kjopBillett(int antBilletter) {
+        return null;
+    }
+
+    public Billett[] fullforKjop(String[] navneliste) {
+        Billett[] billettListe = new Billett[navneliste.length];
+        if(getKapasitet() - getAntSolgte() >= billettListe.length) {
+            for(int i = 0; i < billettListe.length; i++) {
+                int[] ledigePlasser = finnLedigPlasser(billettListe.length);
+                SitteplassBillett nyVIP = new SitteplassBillett(getTribunenavn(), getPris(), ledigePlasser[0], ledigePlasser[1]);
+                billettListe[i] = nyVIP;
+                tilskuer[ledigePlasser[0]][ledigePlasser[1]] = navneliste[i];
+            }
+            return billettListe;
+        }
+        return null;
+    }
+}
