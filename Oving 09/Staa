@@ -1,0 +1,40 @@
+public class Staa extends Tribune {
+
+    private int antSolgteBilletter;
+
+    public Staa(String tribunenavn, int kapasitet, int pris) {
+        super(tribunenavn, kapasitet, pris);
+    }
+
+    @Override
+    public int getAntSolgte() {
+        return antSolgteBilletter;
+    }
+
+    @Override
+    public double getInntekt() {
+        return getPris() * antSolgteBilletter;
+    }
+
+    @Override
+    public Billett[] kjopBillett(int antBilletter) {
+
+        Billett[] billettliste = new Billett[antBilletter];
+        if(getKapasitet() - antBilletter >= 0) {
+            for(int i = 0; i < billettliste.length; i++) {
+                StaaplassBillett nyStaaPlass = new StaaplassBillett(getTribunenavn(), getPris());
+                antSolgteBilletter++;
+                billettliste[i] = nyStaaPlass;
+            }
+        }
+        else {
+            return null;
+        }
+        return billettliste;
+    }
+
+    @Override
+    public Billett[] fullforKjop(String[] billettliste) {
+        return kjopBillett(billettliste.length);
+    }
+}
