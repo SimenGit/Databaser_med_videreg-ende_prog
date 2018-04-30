@@ -1,4 +1,3 @@
-
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -19,34 +18,28 @@ public class TestKlient {
         });
         return trib;
     }
-
-
+    
     public static void main(String[] args) {
 
         Staa staaTribune = new Staa("Staa1", 100, 250);
         Sitte sitteTribune = new Sitte("Sitte1", 50, 300, 5);
         VIP vipTribune = new VIP("VIP1", 30, 500, 3);
         Tribune[] tribuneListe = {staaTribune, sitteTribune, vipTribune};
-
-
+        
         String[] navneListe = {"Eivind", "Henrik", "Ole"};
-
-
+        
         Billett[] staaBilletter = staaTribune.kjopBillett(5);
         for(Billett rad : staaBilletter) {
             System.out.println(rad.toString());
         }
-
         Billett[] sitteplassBilletter = sitteTribune.kjopBillett(5);
         for(Billett rad : sitteplassBilletter) {
             System.out.println(rad.toString());
         }
-
         Billett[] vipBilletter = vipTribune.fullforKjop(navneListe);
         for(Billett rad : vipBilletter) {
             System.out.println(rad.toString());
         }
-
         for(Tribune trib : tribuneListe) {
             System.out.println(trib.toString());
         }
